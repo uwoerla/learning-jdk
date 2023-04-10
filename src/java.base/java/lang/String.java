@@ -66,9 +66,9 @@ import sun.nio.cs.UTF_8;
  * string literals in Java programs, such as {@code "abc"}, are
  * implemented as instances of this class.
  * <p>
- * Strings are constant; their values cannot be changed after they
+ * Strings are constant; their values cannot be changed after they  // 字符串是常量;它们的值在创建后无法更改
  * are created. String buffers support mutable strings.
- * Because String objects are immutable they can be shared. For example:
+ * Because String objects are immutable they can be shared. For example:  // 因为字符串对象是不可变的，所以可以共享它们
  * <blockquote><pre>
  *     String str = "abc";
  * </pre></blockquote><p>
@@ -4367,9 +4367,9 @@ public final class String
     /**
      * Returns a canonical representation for the string object.
      * <p>
-     * A pool of strings, initially empty, is maintained privately by the
+     * A pool of strings, initially empty, is maintained privately by the // 默认为空的字符窜常量池，由类私下维护
      * class {@code String}.
-     * <p>
+     * <p>  调用 intern 方法时，如果池已包含与这个String对象相等的字符串(用 equals 方法判断是否相等)，则返回池中的字符串。否则，此字符串对象将添加到池中，并返回对此字符串对象的引用。
      * When the intern method is invoked, if the pool already contains a
      * string equal to this {@code String} object as determined by
      * the {@link #equals(Object)} method, then the string from the pool is
