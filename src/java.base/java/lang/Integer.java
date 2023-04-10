@@ -1015,7 +1015,7 @@ public final class Integer extends Number
      * changing the implementation and the cache array should not be assigned
      * with new Integer object(s) after initialization.
      */
-
+    // 基于享元模式 把 -128 到 127 这些数据提前存储，以备复用。
     private static class IntegerCache {
         static final int low = -128;
         static final int high;
