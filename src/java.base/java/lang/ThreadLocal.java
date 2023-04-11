@@ -325,7 +325,7 @@ public class ThreadLocal<T> {
          * == null) mean that the key is no longer referenced, so the
          * entry can be expunged from table.  Such entries are referred to
          * as "stale entries" in the code that follows.
-         */
+         */ // Key 值对 TheadLocal 的引用就是 WeakReference; 当 ThreadLocal 对象除了 Entry 对象外被没有其他对象引用的时候，在下一次垃圾回收发生时，该对象将被回收。
         static class Entry extends WeakReference<ThreadLocal<?>> {
             /** The value associated with this ThreadLocal. */
             Object value;
@@ -358,7 +358,7 @@ public class ThreadLocal<T> {
         private int threshold; // Default to 0
 
         /**
-         * Set the resize threshold to maintain at worst a 2/3 load factor.
+         * Set the resize threshold to maintain at worst a 2/3 load factor. //  2/3 的负载
          */
         private void setThreshold(int len) {
             threshold = len * 2 / 3;
@@ -479,26 +479,26 @@ public class ThreadLocal<T> {
 
             Entry[] tab = table;
             int len = tab.length;
-            int i = key.threadLocalHashCode & (len-1);
-
+            int i = key.threadLocalHashCode & (len-1); // 根据 hashCode 找到数组中的一个位置
+            // 如果这个位置没有被占用，则说明该位置没有发生 hash 冲突，那么就可以直接使用该位置，不需要循环了。
             for (Entry e = tab[i];
                  e != null;
-                 e = tab[i = nextIndex(i, len)]) {
+                 e = tab[i = nextIndex(i, len)]) {  // 如果发生了 hash 冲突，则基于线性探测的方法，一直往下找，直到找到数组中下一个没有被占用的位置来使用。
                 if (e.refersTo(key)) {
-                    e.value = value;
+                    e.value = value;  // 重值值，对值进行简单覆盖就OK了
                     return;
                 }
 
-                if (e.refersTo(null)) {
+                if (e.refersTo(null)) { // 如果它指向的弱引用是 null，说明这个 Entry 的 key 弱引用指向的 LocalThread 已经被回收了，这个时候就需要启动清理工作了。
                     replaceStaleEntry(key, value, i);
                     return;
                 }
             }
-
+            // 在找到的合适的位置把这个 Entry 放进去
             tab[i] = new Entry(key, value);
             int sz = ++size;
-            if (!cleanSomeSlots(i, sz) && sz >= threshold)
-                rehash();
+            if (!cleanSomeSlots(i, sz) && sz >= threshold) // 在尝试清理如果命中时 或者 当 table 内的 Entry 的数量大于或者等于负载时，进行 rehash 操作。
+                rehash(); // 会在适当的时候进行 resize，对 table 大小进行扩容或者缩容
         }
 
         /**
